@@ -2,6 +2,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.decorators import api_view, permission_classes, APIView
 from django.shortcuts import render
+
+from .serializers import Contactserializer, ContactForm
 from .models import Contact
 
 # Create your views here.
@@ -65,18 +67,17 @@ class ContactAPIView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request, format=None):
-        data = request.data
-        name = data["name"]
-        email = data["email"]
-        phone = data["phone"]
-        subject = data["subject"]
-        details = data["details"]
+        # data= request.data
+        # form= ContactForm(request.POST)
+        # if form.is_valid():
+        #     form.save()
 
-        contact = Contact(
-            name=name, email=email, phone=phone, subject=subject, details=details
-        )
-        contact.save()
-        return Response({"Success": "Successfully saved"})
+        serializer = Contactserializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+        return Response({"Success": serializer.data})
 
     def get(self, request, format=None):
-        return Response({"Success": "Successfully saved1 from gat"})
+        queryset = Contact.objects.get(id=1)
+        serializer = Contactserializer(queryset, many=False)
+        return Response(serializer.data)
