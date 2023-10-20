@@ -3,4 +3,5 @@ from .views import *
 
 urlpatterns = [
     path("first/", firstAPI),
+    path("registration/", registrationAPI),
 ]
