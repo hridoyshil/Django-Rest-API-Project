@@ -1,7 +1,8 @@
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, APIView
 from django.shortcuts import render
+from .models import Contact
 
 # Create your views here.
 
@@ -33,11 +34,7 @@ def firstAPI(request):
 from django.contrib.auth.models import User
 
 
-@api_view(
-    [
-        "POST",
-    ]
-)
+@api_view(["POST"])
 def registrationAPI(request):
     if request.method == "POST":
         username = request.data["username"]
@@ -62,3 +59,24 @@ def registrationAPI(request):
         user.save()
 
         return Response({"Success": "User successfully Registered!"})
+
+
+class ContactAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request, format=None):
+        data = request.data
+        name = data["name"]
+        email = data["email"]
+        phone = data["phone"]
+        subject = data["subject"]
+        details = data["details"]
+
+        contact = Contact(
+            name=name, email=email, phone=phone, subject=subject, details=details
+        )
+        contact.save()
+        return Response({"Success": "Successfully saved"})
+
+    def get(self, request, format=None):
+        return Response({"Success": "Successfully saved1 from gat"})
