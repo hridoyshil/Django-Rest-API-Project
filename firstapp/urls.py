@@ -7,4 +7,5 @@ urlpatterns = [
     path("registration/", registrationAPI),
     path("contact/", ContactAPIView.as_view()),
     path("post/", PostCreatePIView.as_view()),
+    # path("postlist/", POSTLISTAPIVIEW.as_view()),
 ]
