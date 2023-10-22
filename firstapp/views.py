@@ -90,6 +90,8 @@ from rest_framework.generics import (
     ListAPIView,
     ListCreateAPIView,
     RetrieveAPIView,
+    UpdateAPIView,
+    RetrieveUpdateAPIView,
 )
 from .models import BlogPost
 from rest_framework import status
@@ -144,5 +146,36 @@ class POSTRetrieveAPIVIEW(RetrieveAPIView):
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
+        serializer = PostDetailsserializer(instance)
+        return Response(serializer.data)
+
+
+# class POSTupdateAPIVIEW(UpdateAPIView):
+#     permission_classes = [IsAuthenticated]
+#     queryset = BlogPost.objects.filter(is_active=True)
+#     serializer_class = Postserializer
+#     lookup_field = "id"
+
+
+class POSTupdateAPIVIEW(RetrieveUpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = BlogPost.objects.filter(is_active=True)
+    serializer_class = Postserializer
+    lookup_field = "id"
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = PostDetailsserializer(instance)
+        return Response(serializer.data)
+
+    def perform_update(self, serializer):
+        return serializer.save()
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop("partial", False)
+        instance = self.get_object(user=self.request.user)
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        instance = self.perform_update(serializer)
         serializer = PostDetailsserializer(instance)
         return Response(serializer.data)

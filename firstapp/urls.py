@@ -8,5 +8,6 @@ urlpatterns = [
     path("contact/", ContactAPIView.as_view()),
     path("post/", PostCreatePIView.as_view()),
     # path("postlist/", POSTLISTAPIVIEW.as_view()),
-    path("post/<int:id>/", POSTRetrieveAPIVIEW.as_view()),
+    # path("post/<int:id>/", POSTRetrieveAPIVIEW.as_view()),
+    path("post/<int:id>/", POSTupdateAPIVIEW.as_view()),
 ]
