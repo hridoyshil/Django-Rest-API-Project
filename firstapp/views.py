@@ -85,7 +85,12 @@ class ContactAPIView(APIView):
         return Response(serializer.data)
 
 
-from rest_framework.generics import CreateAPIView, ListAPIView, ListCreateAPIView
+from rest_framework.generics import (
+    CreateAPIView,
+    ListAPIView,
+    ListCreateAPIView,
+    RetrieveAPIView,
+)
 from .models import BlogPost
 from rest_framework import status
 
@@ -128,3 +133,16 @@ class PostCreatePIView(ListCreateAPIView):
 #     permission_classes = [IsAuthenticated]
 #     queryset = BlogPost.objects.all()
 #     serializer_class = PostDetailsserializer
+
+
+class POSTRetrieveAPIVIEW(RetrieveAPIView):
+    permission_classes = [IsAuthenticated]
+    # queryset = BlogPost.objects.all()
+    queryset = BlogPost.objects.filter(is_active=True)
+    serializer_class = Postserializer
+    lookup_field = "id"
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = PostDetailsserializer(instance)
+        return Response(serializer.data)
