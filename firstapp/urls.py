@@ -6,4 +6,5 @@ urlpatterns = [
     path("first/", firstAPI),
     path("registration/", registrationAPI),
     path("contact/", ContactAPIView.as_view()),
+    path("post/", PostCreatePIView.as_view()),
 ]

@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.decorators import api_view, permission_classes, APIView
 from django.shortcuts import render
 
-from .serializers import Contactserializer, ContactForm
+from .serializers import *
 from .models import Contact
 
 # Create your views here.
@@ -67,17 +67,43 @@ class ContactAPIView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request, format=None):
-        # data= request.data
-        # form= ContactForm(request.POST)
-        # if form.is_valid():
-        #     form.save()
-
         serializer = Contactserializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-        return Response({"Success": serializer.data})
+        return Response(serializer.data)
+
+    # def put(self, request, format=None):
+    #     contact = Contact.objects.get(id=1)
+    #     serializer = ContactserializerOne(data=request.data, instance=contact)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #     return Response(serializer.data)
 
     def get(self, request, format=None):
         queryset = Contact.objects.get(id=1)
         serializer = Contactserializer(queryset, many=False)
         return Response(serializer.data)
+
+
+from rest_framework.generics import CreateAPIView
+from .models import BlogPost
+from rest_framework import status
+
+
+class PostCreatePIView(CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = BlogPost.objects.all()
+    serializer_class = Postserializer
+
+    def perform_create(self, serializer):
+        return serializer.save(user=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        instance = self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        serializer = PostDetailsserializer(instance=instance, many=False)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
