@@ -92,7 +92,9 @@ from rest_framework.generics import (
     RetrieveAPIView,
     UpdateAPIView,
     RetrieveUpdateAPIView,
+    RetrieveUpdateDestroyAPIView,
 )
+from rest_framework.generics import DestroyAPIView
 from .models import BlogPost
 from rest_framework import status
 
@@ -137,7 +139,7 @@ class PostCreatePIView(ListCreateAPIView):
 #     serializer_class = PostDetailsserializer
 
 
-class POSTRetrieveAPIVIEW(RetrieveAPIView):
+class POSTRetrieveAPIVIEW(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     # queryset = BlogPost.objects.all()
     queryset = BlogPost.objects.filter(is_active=True)
@@ -157,7 +159,7 @@ class POSTRetrieveAPIVIEW(RetrieveAPIView):
 #     lookup_field = "id"
 
 
-class POSTupdateAPIVIEW(RetrieveUpdateAPIView):
+class POSTupdateAPIVIEW(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     queryset = BlogPost.objects.filter(is_active=True)
     serializer_class = Postserializer
@@ -179,3 +181,10 @@ class POSTupdateAPIVIEW(RetrieveUpdateAPIView):
         instance = self.perform_update(serializer)
         serializer = PostDetailsserializer(instance)
         return Response(serializer.data)
+
+
+# class PostDeletAPIview(DestroyAPIView):
+#     permission_classes = [IsAuthenticated]
+#     queryset = BlogPost.objects.filter(is_active=True)
+#     serializer_class = Postserializer
+#     lookup_field = "id"
